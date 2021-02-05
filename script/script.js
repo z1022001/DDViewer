@@ -95,14 +95,16 @@ function mouseUp(e) {
 	if (Math.abs(0.5625 - r) < 0.01){
 		blockH = Math.floor(blockW * 0.5625);
 	}
-	// set size
-	onDraw.style.width = `${blockW}px`;
-	onDraw.style.height = `${blockH}px`;
-	// remove if H = 0
 	if (blockH < 10 || blockW < 10){
-		document.querySelector('.viewzone').removeChild(onDraw);
+		// remove if H = 0
+		onDraw.parentElement.removeChild(onDraw);
+	} else {
+		// set size
+		onDraw.style.width = `${Math.max(1, blockW)}px`;
+		onDraw.style.height = `${Math.max(1, blockH)}px`;
 	}
 	// clear buffer
+	shiftDown = false;
 	isDown = false;
 	onDraw = null;
 	drawPos = null;
@@ -122,8 +124,8 @@ function move(e) {
 	if (drawPos == 'scalebarB') { dx = 0; }
 	if (drawPos == 'scalebarR') { dy = 0; }
 	// set size
-	onDraw.style.width = `${blockW + dx}px`;
-	onDraw.style.height = `${blockH + dy}px`;
+	onDraw.style.width = `${Math.max(1, blockW + dx)}px`;
+	onDraw.style.height = `${Math.max(1, blockH + dy)}px`;
 	
 	if (shiftDown){
 		onDraw.style.height = `${onDraw.offsetWidth * 0.5625}px`;
@@ -157,8 +159,8 @@ document.addEventListener('drop', (event) => {
 	
 	let url = event.dataTransfer.getData('text/plain');
 	// let url = 'youtube.com/watch?v=4b6hK-q_uWo';
-	if (!/(\=|\/)(\S{11})(\/|$)/.test(url))	return;
-	let urlCode = url.match(/(\=|\/)(\S{11})(\/|$)/)[2];
+	if (!/(\=|\/)(\S{11})(\/|$|\&)/.test(url))	return;
+	let urlCode = url.match(/(\=|\/)(\S{11})(\/|$|\&)/)[2];
 	newViewBlock(urlCode);
 }, false);
 
